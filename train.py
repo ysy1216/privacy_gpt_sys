@@ -15,7 +15,6 @@ from dataset import CNewsDataset
 from tqdm import tqdm
 from sklearn import metrics
 
-
 def main():
 
     # 参数设置
@@ -38,6 +37,7 @@ def main():
     # 读取BERT的配置文件
     bert_config = BertConfig.from_pretrained('bert-base-chinese')
     num_labels = len(train_dataset.labels)
+    #print(num_labels)
 
     # 初始化模型
     model = BertClassifier(bert_config, num_labels).to(device)
@@ -48,7 +48,7 @@ def main():
     criterion = nn.CrossEntropyLoss()
 
     best_f1 = 0
-
+    tokenizer = BertTokenizer.from_pretrained('bert-base-chinese')
     for epoch in range(1, epochs+1):
         losses = 0      # 损失
         accuracy = 0    # 准确率
@@ -67,12 +67,27 @@ def main():
                 attention_mask=attention_mask.to(device), 
                 token_type_ids=token_type_ids.to(device), 
             )
-
+            print("")
+            #print("SOFTMAX输出:")
+            print(output)
+            #print("tmp")
+            tmp_lables = torch.argmax(output, dim=1)
+            #print(tmp_lables)
+            pred_labels = tmp_lables
+            for i in range(4):
+                for j in range(num_labels):
+                    val = output[i][tmp_lables[i]]
+                    #print(val.item())
+                    if val.item() < 0.7:
+                        pred_labels[i]=4
+                    break
             # 计算loss
             loss = criterion(output, label_id.to(device))
             losses += loss.item()
 
-            pred_labels = torch.argmax(output, dim=1)   # 预测出的label
+            #pred_labels = torch.argmax(output, dim=1)   # 预测出的label
+            #print("PRE")
+            #print(pred_labels)
             acc = torch.sum(pred_labels == label_id.to(device)).item() / len(pred_labels) #acc
             accuracy += acc
 
@@ -132,7 +147,7 @@ def main():
 def test_1():
         paths = "data/cnews/data_train.txt"
         paths1 = "data/cnews/data_val.txt"
-        with open(paths, encoding="utf8") as f:
+        with open(paths1, encoding="utf8") as f:
             lines = f.readlines()
             for line in tqdm(lines, ncols=100):
                 #print(line)
