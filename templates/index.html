@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>会话系统</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>会话系统</h1>
+    <div id="chat-container">
+        <div id="chat-display">
+            <!-- Chat messages will be displayed here -->
+        </div>
+        <input type="text" id="user-input" placeholder="请输入文本...">
+        <button onclick="sendMessage()">发送</button>
+    </div>
+
+    <script>
+        function appendMessage(message) {
+            var chatDisplay = document.getElementById("chat-display");
+            var newMessage = document.createElement("div");
+            newMessage.innerHTML = message;
+            chatDisplay.appendChild(newMessage);
+        }
+
+        function sendMessage() {
+            var userInput = document.getElementById("user-input").value;
+            appendMessage("<strong>脱敏前：</strong>" + userInput);
+            document.getElementById("user-input").value = "";
+
+            // Send user input to the server
+            fetch("/get_response", {
+                method: "POST",
+                body: new URLSearchParams({
+                    "user_input": userInput
+                }),
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            })
+            .then(response => response.text())
+            .then(data => {
+                appendMessage("<strong>恢复前：</strong>" + data);
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        }
+    </script>
+</body>
+</html>
