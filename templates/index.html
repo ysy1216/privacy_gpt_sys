@@ -1,51 +1,44 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>会话系统</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/style.css">
+    <title>可选对话模型的类chatgpt聊天页面</title>
 </head>
 <body>
-    <h1>会话系统</h1>
-    <div id="chat-container">
-        <div id="chat-display">
-            <!-- Chat messages will be displayed here -->
+    <div class="container">
+        <div class="chat-history">
+            <!-- Chat history management -->
+            <div class="chat-controls">
+                <button class="new-chat-btn">+ NEW CHAT</button>
+                <button class="collapse-chat-btn">⌄</button>
+            </div>
+            <div class="chat-list">
+                <!-- Chat records go here -->
+            </div>
         </div>
-        <input type="text" id="user-input" placeholder="请输入文本...">
-        <button onclick="sendMessage()">发送</button>
+        <div class="chat-panel">
+            <!-- Chat display and input -->
+            <div id="chat-display">
+                <!-- Chat messages go here -->
+            </div>
+            <div class="user-input-area">
+                <textarea id="user-input" placeholder="Type your message..."></textarea>
+                <div class="model-selector">
+                    <select id="model-select">
+                        <option value="cloud_model1">百度云模型</option>
+                        <option value="cloud_model2">腾讯云模型</option>
+                        <option value="cloud_model3" selected>gpt-3.5-turbo</option>
+                        <option value="other-model">Other Model</option>
+                        <!-- 添加对话模型 -->
+                    </select>
+                </div>
+                <button id="send-button">Send</button>
+            </div>
+        </div>
     </div>
-
-    <script>
-        function appendMessage(message) {
-            var chatDisplay = document.getElementById("chat-display");
-            var newMessage = document.createElement("div");
-            newMessage.innerHTML = message;
-            chatDisplay.appendChild(newMessage);
-        }
-
-        function sendMessage() {
-            var userInput = document.getElementById("user-input").value;
-            appendMessage("<strong>脱敏前：</strong>" + userInput);
-            document.getElementById("user-input").value = "";
-
-            // Send user input to the server
-            fetch("/get_response", {
-                method: "POST",
-                body: new URLSearchParams({
-                    "user_input": userInput
-                }),
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                }
-            })
-            .then(response => response.text())
-            .then(data => {
-                appendMessage("<strong>恢复前：</strong>" + data);
-            })
-            .catch(error => {
-                console.error("Error:", error);
-            });
-        }
-    </script>
+    <script src="../static/dynamic.js"></script>
 </body>
 </html>

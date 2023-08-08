@@ -10,9 +10,15 @@ import markdown
 import markdown.extensions.fenced_code
 import markdown.extensions.codehilite
 import os
-
+'''
+app = Flask(
+    __name__,
+    template_folder='./templates',  # 表示在当前目录 (myproject/A/) 寻找模板文件
+    static_folder='',  # 表示为上级目录 (myproject/) 开通虚拟资源入口
+    static_url_path='./templates/static',  # 这是路径前缀, 个人认为非常蛋疼的设计之一, 建议传空字符串, 可以避免很多麻烦
+)
+'''
 app = Flask(__name__, static_url_path='/static')
-
 # 设置代理环境变量
 os.environ["HTTP_PROXY"] = "http://127.0.0.1:7890" # os.environ["http_proxy"] = "http://<代理ip>:<代理端口>"
 os.environ["HTTPS_PROXY"] = "http://127.0.0.1:7890" # os.environ["https_proxy"] = "http://<代理ip>:<代理端口>"
@@ -26,6 +32,7 @@ def get_response():
     user_input = request.form['user_input']
     if user_input == "bye":
         return "Goodbye!"
+    print("用户输入：", user_input)
     print("脱敏前：",user_input)
 
     # Step 1: 敏感信息屏蔽
@@ -40,7 +47,7 @@ def get_response():
         cloud_response = cloud_model2(masked_text)
     else:
         cloud_response = cloud_model3(masked_text)
-    print("恢复前：",cloud_response)
+    print("恢复前：", cloud_response)
 
     # 将云端模型回答转换为Markdown格式
     return Markup(markdown.markdown(cloud_response, extensions=['fenced_code', 'codehilite']))

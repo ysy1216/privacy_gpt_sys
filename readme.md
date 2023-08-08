@@ -1,4 +1,10 @@
-python环境：3.10
+请注意以下三条
+
+1、在models文件夹下放上best_model.pkl这个模型。
+
+
+
+2、python环境：3.10
 
 对于各种依赖，没有特别的版本要求，腾讯云模型那一块是pip install tencentcloud-sdk-python-tbp==3.0.945。
 
@@ -112,3 +118,13 @@ websockets                  11.0.3
 Werkzeug                    2.3.6
 wheel                       0.38.4
 yarl                        1.9.2
+
+
+
+3、请开vpn,并设置你自己的代理环境变量
+
+
+
+![46e6c328-cc7c-4c12-b2bb-ee780e7edf5c](file:///C:/Users/14911/Pictures/Typedown/46e6c328-cc7c-4c12-b2bb-ee780e7edf5c.png)
+
+![9ee527bb-9edc-49c5-85e6-8dc37fa220b6](file:///C:/Users/14911/Pictures/Typedown/9ee527bb-9edc-49c5-85e6-8dc37fa220b6.png)

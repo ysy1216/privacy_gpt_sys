@@ -2,13 +2,13 @@
 import openai
 
 def cloud_model3(content):
-  openai.api_key = "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"
+  openai.api_key = "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"
   response = openai.ChatCompletion.create(
     model="gpt-3.5-turbo-0301",  # gpt-3.5-turbo-0301、text-davinci-003
     messages=[
       {"role": "user", "content": content}
     ],
-    temperature=0.5,
+    temperature=0.7,
     max_tokens=1000,
     top_p=1,
     frequency_penalty=0,
