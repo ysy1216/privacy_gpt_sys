@@ -3,12 +3,15 @@
 1、在models文件夹下放上best_model.pkl这个模型。
 
 
-
 2、python环境：3.10
 
 对于各种依赖，没有特别的版本要求，腾讯云模型那一块是pip install tencentcloud-sdk-python-tbp==3.0.945。
 
+3.本地模型，chatglm6b/THUDM少了个模型模型，记得修改privategpt的模型路径
+
 pip list（以下并不是所有依赖都需要，如果安装的依赖版本不对，请参考）
+
+
 
 Package                     Version
 

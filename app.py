@@ -5,6 +5,8 @@ from mark import fun_1
 from cloud1 import cloud_model1
 from cloud2 import cloud_model2
 from cloud3 import cloud_model3
+from local_model.privategpt import privateGPT1
+from local_model.chatglm6b import chatglm
 from markupsafe import Markup
 import markdown
 import markdown.extensions.fenced_code
@@ -33,11 +35,11 @@ def get_response():
     if user_input == "bye":
         return "Goodbye!"
     print("用户输入：", user_input)
-    print("脱敏前：",user_input)
+    print("脱敏前：", user_input)
 
     # Step 1: 敏感信息屏蔽
     masked_text = fun_1(user_input)
-    print("脱敏后：",masked_text)
+    print("脱敏后：", masked_text)
 
     # Step 2: 与云端模型对话
     selected_cloud_model = request.form['cloud_model']  # 获取用户选择的云端模型
@@ -45,8 +47,12 @@ def get_response():
         cloud_response = cloud_model1(masked_text)
     elif selected_cloud_model == 'cloud_model2':
         cloud_response = cloud_model2(masked_text)
-    else:
+    elif selected_cloud_model == 'cloud_model3':
         cloud_response = cloud_model3(masked_text)
+    elif selected_cloud_model == 'privategpt':
+        cloud_response = privateGPT1.ask(masked_text)
+    elif selected_cloud_model == 'chatglm':
+        cloud_response = chatglm.ask(masked_text)
     print("恢复前：", cloud_response)
 
     # 将云端模型回答转换为Markdown格式

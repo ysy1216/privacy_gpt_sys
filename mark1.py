@@ -5,7 +5,7 @@ import time
 
 import jieba
 import torch
-from model import BertClassifier
+from model1 import BertClassifier
 import requests
 from transformers import BertTokenizer, BertConfig, AutoTokenizer, BertModel
 import random
@@ -16,7 +16,7 @@ from feature import getFeature, stop_word
 class MaskHandler:
     def __init__(self, model_path):
         # Initialize the local BERT model
-        self.labels = ["N", "P", "A", "E", "O"]
+        self.labels = ["Y", "N"]
         self.bert_config = BertConfig.from_pretrained('bert-base-chinese')
         self.model = BertClassifier(self.bert_config, len(self.labels))
         self.model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')), strict=False)
@@ -82,7 +82,7 @@ def fun_splitein(text):
                 # outstr += " "
     return outstr
 
-
+#判断是否敏感，目前模型识别的不行，所以没用
 def fun_isSen(maskHandler, text):
     flag = False
     token = maskHandler.tokenizer(text, add_special_tokens=True, padding='max_length', truncation=True,
@@ -96,10 +96,29 @@ def fun_isSen(maskHandler, text):
     predicted = maskHandler.model(input_ids, attention_mask, token_type_ids)
     output = torch.softmax(predicted, dim=1)
     #print(output)
-    if 0.4 < output[:, 4].item() < 0.41:
+    if output[:, 0].item() > 0.70:
         flag = True
-        #print("敏感")
     return flag
+
+
+def fun_1(text):
+    maskHandler = MaskHandler("D:\\WorkSpace\\Classifier\\models\\sen_model.pkl")
+    text_splite = fun_splite(text)
+    tmp = text
+    for tmp_text in text_splite:
+        text_stop = fun_splitein(tmp_text)
+        # print(text_stop)
+        #if fun_isSen(maskHandler5, text_stop, 5):
+        if True:#模型能够识别的精准时替换
+            sen_fea = getSen(getFeature(text_stop), text_stop)
+            res = maskHandler.mask_sensitive_info(tmp, sen_fea)
+            #res = re.sub(tmp_text, tmp_res, text, flags=re.IGNORECASE)
+            #print(res)
+            tmp = res
+            print(sen_fea)
+    #print(res)
+    print(tmp)
+    return tmp
 
 #将tdidf返回的不敏感词组取反，返回敏感词组
 def getSen(nosen, text):
@@ -111,24 +130,4 @@ def getSen(nosen, text):
             if word not in sen:
                 sen.append(word)
     return sen
-
-def fun_1(text):
-    maskHandler = MaskHandler("models/best_model.pkl")
-    text_splite = fun_splite(text)
-    tmp = text
-    for tmp_text in text_splite:
-        text_stop = fun_splitein(tmp_text)
-        #if fun_isSen(maskHandler5, text_stop, 5):
-        if fun_isSen(maskHandler, tmp_text):
-            sen_fea = getSen(getFeature(text_stop), text_stop)
-            res = maskHandler.mask_sensitive_info(tmp, sen_fea)
-            #res = re.sub(tmp_text, tmp_res, text, flags=re.IGNORECASE)
-            #print(res)
-            tmp = res
-            #print(sen_fea)
-    #print(res)
-    #print(tmp)
-    return tmp
-
-
 
