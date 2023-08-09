@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrivateChatbot</title>
+    <link rel="stylesheet" href="../static/index3.css">
+</head>
+
+<body>
+    <div id="first-box">
+        <div id="second-box">
+            <div id="chat-box">
+                <!-- Chat messages will be displayed here -->
+            </div>
+            <div id="third-box">
+                <div id="fourth-box">
+                    <textarea id="user-input" placeholder="请输入消息..."></textarea>
+                    <button onclick="sendMessage()">Send</button>
+                    <div id="model-selector">
+                        <!-- <label for="model-select"></label> -->
+                        <select id="model-select">
+                            <option value="cloud_model1">百度云模型</option>
+                            <option value="cloud_model2">腾讯云模型</option>
+                            <option value="cloud_model3" selected>gpt-3.5-turbo</option>
+                            <!-- Add more models here -->
+                        </select>
+                        <select id="sensitivity-level">
+                            <option value="inferior">低</option>
+                            <option value="medium" selected>中</option>
+                            <option value="higher">高</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../static/index3.js"></script>
+</body>
+</html>
+
+
+   
