@@ -1,0 +1,390 @@
+body {
+    padding: 0;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* 项目容器 */
+.container {
+    display: flex;
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+}
+
+/* 聊天历史管理 */
+.chat-history {
+    width: 250px;
+    height: 100vh;
+    background-color: #444;
+    left: 0;
+    position: relative;
+    transition: width 0.3s;
+}
+
+/* 聊天区域 */
+.chat-panel {
+    flex: 1;
+    width: calc(100% - 250px);
+    height: 100vh;
+    background-color: #dae7e6;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+/* 分割线样式 */
+.separator {
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.08); /* 使用 RGBA 颜色来设置透明度 */
+    margin: 0 20px; /* 分割线的左右间距 */
+  }
+
+/* 新建对话按钮区域 */
+.chat-controls {
+    display: flex;
+    width: 100%;
+    height: 45px;
+    padding: 5px;
+    box-sizing: border-box;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+.new-chat-btn {
+    display: flex;
+    width: 80%;
+    height: 40px;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    background-color: #dae7e6;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* 对话列表 */
+#chat-list {
+    width: 100%;
+    height: 550px;
+    padding: 5px;
+    box-sizing: border-box;
+    margin-top: 8px;
+    justify-content: center;
+    align-items: center;
+    overflow: auto;
+}
+
+/* 左下功能配置区 */
+.settings {
+    display: flex;
+    width: 100%;
+    padding: 5px;
+    height: calc(100% - 45px - 550px);
+    box-sizing: border-box;
+    margin-top: 8px;
+}
+
+/* 青少年模式拨动开关样式 */
+.mode {
+    display: flex;
+    width: 100%;
+    height: 45px;
+    margin-top: 5px;
+    justify-content: center;
+    align-items: center;
+}
+
+.mode-label {
+    position: relative;
+    padding: 5px;
+    box-sizing: border-box;
+    color: white;
+  }
+   
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 80px;
+    height: 34px;
+  }
+  
+  .switch input {
+    display: none;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 34px;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 50%;
+  }
+  
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+  
+  input:checked + .slider:before {
+    transform: translateX(46px);
+  }
+/* 青少年模式拨动开关样式 */
+
+
+/* 右侧区域样式 */
+.control-panel {
+    width: 100%;
+    height: 40px;
+    display: inline-block;
+}
+
+/* 折叠展开左侧区域按钮 */
+.collapse-chat-btn {
+    display: flex;
+    width: 40px;
+    height: 40px;
+    margin: 8px 8px;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.chat-panel.expanded {
+    margin-left: 0;
+    width: calc(100vw - 250px);
+}
+
+/* 折叠状态下的样式 */
+.chat-history.collapsed {
+    width: 0;
+    overflow: hidden;
+}
+
+.chat-history.collapsed + .container .chat-panel {
+    width: 100%; /* 宽度为 container 的 100% */
+}
+/* 折叠展开左侧区域按钮 */
+
+.control-panel {
+    display: flex;
+    width: 100%;
+    height: 45px;
+    margin: 8px 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+.current-dialog {
+    display: flex;
+    width: calc(100% - 40px);
+    height: 40px;
+    padding: 10px;
+    box-sizing: border-box;
+    justify-content: center;
+}
+
+/* 聊天框 */
+#chat-display {
+    width: 100%;
+    height: 550px;
+    padding: 5px;
+    box-sizing: border-box;
+    margin-top: 8px;
+    border-radius: 10px;
+    overflow-y: scroll; 
+}
+
+/* 用户输入区域 */
+.user-input-outside {
+    display: flex;
+    width: 100%;
+    height: calc(100% - 45px - 550px);
+    box-sizing: border-box;
+    padding: 10px;
+    margin-bottom: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.user-input-area {
+    display: flex;
+    width: 700px;
+    height: 70px;
+    background-color: #fff;
+    padding: 5px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#user-input {
+    flex: 1;
+    height: calc(100% - 10px);
+    resize: none;
+    border: none;
+    margin: 0px 5px;
+    padding: 5px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+#send-button {
+    background-color: blue;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 10px;
+    box-sizing: border-box;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+#model-select {
+    color: #fff;
+    background-color: #34495e;
+    border-radius: 6px;
+    padding: 8px 10px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    margin-right: 5px;
+}
+
+#sensitivity-level {
+    color: #fff;
+    background-color: #34495e;
+    border-radius: 6px;
+    padding: 8px 10px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+
+/* 聊天框消息样式 */
+.user-message-outside {
+    display: flex;
+    width: 100%;
+    min-height: 45px;
+    background-color: lightblue;
+    justify-content: center;
+    align-items: center;
+}
+
+.chatbot-message-outside {
+    display: flex;
+    width: 100%;
+    min-height: 45px;
+    background-color: lightcyan;
+    justify-content: center;
+    align-items: center;
+}
+
+.model-message-outside {
+    display: flex;
+    width: 100%;
+    min-height: 45px;
+    justify-content: center;
+    align-items: center;
+}
+
+.user-message {
+    display: flex;
+    width: 70%;
+}
+
+.chatbot-message {
+    display: flex;
+    width: 70%; 
+}
+
+.model-message {
+    display: flex;
+    width: 70%; 
+}
+
+.message-content {
+    flex: 1;
+    word-wrap: break-word;
+    white-space: pre-line;
+    padding: 10px;
+    border-radius: 10px;
+    align-self: flex-start;
+    font-size: 16px;
+}
+
+.model-message-content {
+    flex: 1;
+    word-wrap: break-word;
+    white-space: pre-line;
+    padding: 10px;
+    border-radius: 10px;
+    align-self: flex-start;
+    font-size: 16px;
+    color: rgba(128, 128, 128, 0.5);
+}
+
+.avatar {
+    display: flex;
+    flex: 0 0 auto;
+    width: 45px;
+    height: 45px;
+    overflow: hidden;
+    margin: 10px 10px auto 10px;
+}
+
+.avatar-img {
+    width: 80%;
+    height: 80%;
+    border-radius: 50%;
+}
+
+.copy-button {
+    float: right;
+    background-color: transparent;
+    border: none;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.hide-model-button {
+    float: right;
+    background-color: transparent;
+    border: none;
+    margin-right: 10px;
+    cursor: pointer;
+    color: gray;
+}
+
+/* 聊天框消息样式 */
