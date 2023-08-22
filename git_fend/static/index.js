@@ -1,3 +1,10 @@
+// 添加折叠按钮的点击事件监听器
+document.querySelector('.collapse-chat-btn').addEventListener('click', () => {
+    document.querySelector('.chat-history').classList.toggle('collapsed');
+    document.querySelector('.chat-panel').classList.toggle('expanded');
+});
+
+
 // 选择青少年模式时隐藏敏感等级下列列表，更改模型选择列表内容
 document.addEventListener('DOMContentLoaded', function() {
     const toggleButton = document.getElementById('toggleButton');
@@ -30,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-
+// 添加消息到聊天框函数
 function appendMessage(userType, message, modelMessage = "") {
     const chatDisplay = document.getElementById("chat-display");
     const outsideMessageContainer = document.createElement("div")
@@ -69,8 +76,8 @@ function appendMessage(userType, message, modelMessage = "") {
         hideModelButton.textContent = "隐藏模型消息";
         hideModelButton.classList.add("hide-model-button");
         hideModelButton.addEventListener("click", function() {
-            modelMessageContainer.style.display = modelMessageContainer.style.display === "none" ? "flex" : "none";
-            hideModelButton.textContent = modelMessageContainer.style.display === "none" ? "展开模型消息" : "隐藏模型消息";
+            outsideModelMessageContainer.style.display = outsideModelMessageContainer.style.display === "none" ? "flex" : "none";
+            hideModelButton.textContent = outsideModelMessageContainer.style.display === "none" ? "展开模型消息" : "隐藏模型消息";
         });
 
         // 根据用户类型设置不同的样式类名
@@ -129,6 +136,7 @@ function appendMessage(userType, message, modelMessage = "") {
     }
 }
 
+
 // 复制文本到剪贴板函数
 function copyToClipboard(text) {
     const textarea = document.createElement("textarea");
@@ -151,16 +159,16 @@ function copyToClipboard(text) {
 //     });
 // });
 
+
 // 发送用户消息并获取机器人回复
 function sendMessage() {
     const userInput = document.getElementById("user-input").value;
     const selectedModel = document.getElementById('model-select').value;
-    appendMessage("user", userInput, "我是模型消息哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈或或哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈");
+    appendMessage("user", userInput, "我是测试模型消息");
     
     // 清空输入框
     document.getElementById("user-input").value = "";
 
-    // Send user input and selected model to the server
     fetch("/get_response", {
         method: "POST", // 使用 POST 请求方法发送数据
         body: new URLSearchParams({
@@ -207,14 +215,29 @@ document.getElementById('user-input').addEventListener('keydown', function (even
     }
 });
 
+// 一键清除聊天框内容
+function clearChat() {
+    var chatDisplay = document.getElementById("chat-display");
+    var confirmation = confirm("记录清除后无法恢复，您确定要清除吗？");
+    if (confirmation) {
+      chatDisplay.innerHTML = ""; // 清空聊天显示区域的内容
+    }
+  }
 
-// 添加折叠按钮的点击事件监听器
-document.querySelector('.collapse-chat-btn').addEventListener('click', () => {
-    document.querySelector('.chat-history').classList.toggle('collapsed');
-    document.querySelector('.chat-panel').classList.toggle('expanded');
-});
+ 
+  // 导出聊天记录的函数
+  function handleExport() {
+    // 获取聊天显示区域的引用
+    var chatDisplay = document.getElementById("chat-display");
+    var chatContent = chatDisplay.innerText;
+    var blob = new Blob([chatContent], { type: "text/plain" });
 
-// 初始化页面时检查 chat-history 的初始状态
-if (chatHistory.classList.contains('collapsed')) {
-    chatPanel.classList.add('expanded');
-}
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "chat_export.txt";
+    a.textContent = "Download";
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }

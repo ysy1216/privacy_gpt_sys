@@ -1,68 +1,75 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>会话系统</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PGPT</title>
+    <link rel="stylesheet" href="../static/index.css">
 </head>
 <body>
-    <h1>会话系统</h1>
-    <div id="chat-container">
-        <div id="chat-display">
-            <!-- Chat messages will be displayed here -->
+    <div class="container">
+        <!-- 左边聊天记录管理 -->
+        <div class="chat-history">
+            <div class="chat-controls">
+                <!-- <div class="new-chat-btn">+ NEW CHAT</div> -->
+                <img src="../images/logo.png" alt=""  width="180px" height="60px">
+            </div>
+            <div class="separator"></div>
+            <!-- <ul id="chat-list"></ul> -->
+            <div class="function-module"></div>
+            <div class="separator"></div>
+            <!-- 功能配置区 -->
+            <div class="settings">
+                <!-- 切换青少年模式 -->
+                <div class="mode">
+                    <span class="mode-label">青少年模式：</span>
+                    <label class="switch">
+                        <input type="checkbox" id="toggleButton">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+               
+            </div>
         </div>
-        <input type="text" id="user-input" placeholder="请输入文本...">
-        <label for="cloud_model1">
-            <input type="radio" id="cloud_model1" name="cloud_model" value="cloud_model1" checked> 云端模型1
-        </label>
-        <label for="cloud_model2">
-            <input type="radio" id="cloud_model2" name="cloud_model" value="cloud_model2"> 云端模型2
-        </label>
-        <label for="cloud_model3">
-            <input type="radio" id="cloud_model3" name="cloud_model" value="cloud_model3"> 云端模型3
-        </label>
+
+        <!-- 右边聊天框 -->
+        <div class="chat-panel">
+            <div class="control-panel">
+                <button class="collapse-chat-btn"><img src="../images/fold.svg" alt="" height="15px" width="20px"></button>
+                <!-- <span class="current-dialog"><strong>当前对话：</strong></span> -->
+                <div class="extras">
+                    <button class="clear extras-one" onclick="clearChat()"><img src="../images/clear.svg" alt="" width="25px" height="25px"></button>
+                    <button class="clear extras-one" onclick="handleExport()"><img src="../images/export.png" alt="" width="25px" height="25px"></button>
+                
+                </div>
+            </div>
+            <!-- 聊天内容添加到这里 -->
+            <div id="chat-display">
+
+            </div>
+            <!-- 下方输入区 -->
+            <div class="user-input-outside">
+                <div class="user-input-area">
+                    <textarea id="user-input" placeholder="Type your message..."></textarea>
+                    <button id="send-button">Send</button>
+                    <!-- 模型选择器 -->
+                    <select id="model-select">
+                        <option value="cloud_model1">百度云模型</option>
+                        <option value="cloud_model2">腾讯云模型</option>
+                        <option value="cloud_model3" selected>gpt-3.5-turbo</option>
+                        <!-- 添加对话模型 -->
+                    </select>
+                    <!-- 敏感等级 -->
+                    <select id="sensitivity-level">
+                        <option value="inferior">低</option>
+                        <option value="medium" selected>中</option>
+                        <option value="higher">高</option>
+                    </select>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <script>
-        function appendMessage(message) {
-            var chatDisplay = document.getElementById("chat-display");
-            var newMessage = document.createElement("div");
-            newMessage.innerHTML = message;
-            chatDisplay.appendChild(newMessage);
-        }
-
-        function sendMessage() {
-            var userInput = document.getElementById("user-input").value;
-            var selectedModel = document.querySelector('input[name="cloud_model"]:checked').value;
-            appendMessage("<strong>脱敏前：</strong>" + userInput);
-            document.getElementById("user-input").value = "";
-
-            // Send user input and selected model to the server
-            fetch("/get_response", {
-                method: "POST",
-                body: new URLSearchParams({
-                    "user_input": userInput,
-                    "cloud_model": selectedModel
-                }),
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                }
-            })
-            .then(response => response.text())
-            .then(data => {
-                appendMessage("<strong>恢复前：</strong>" + data);
-            })
-            .catch(error => {
-                console.error("Error:", error);
-            });
-        }
-
-        // Listen for Enter key press in the input field
-        document.getElementById("user-input").addEventListener("keyup", function(event) {
-            if (event.key === "Enter") {
-                sendMessage();
-            }
-        });
-    </script>
+    <script src="../static/index.js"></script>
 </body>
 </html>

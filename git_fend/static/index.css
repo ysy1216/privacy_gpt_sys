@@ -55,7 +55,7 @@ body {
     align-items: center;
 }
 
-.new-chat-btn {
+/* .new-chat-btn {
     display: flex;
     width: 80%;
     height: 40px;
@@ -65,11 +65,11 @@ body {
     background-color: #dae7e6;
     justify-content: center;
     align-items: center;
-}
+} */
 
 
 /* 对话列表 */
-#chat-list {
+.function-module {
     width: 100%;
     height: 550px;
     padding: 5px;
@@ -204,13 +204,25 @@ body {
     align-items: center;
 }
 
-.current-dialog {
+.extras {
     display: flex;
     width: calc(100% - 40px);
     height: 40px;
+    margin: 8px 8px;
     padding: 10px;
     box-sizing: border-box;
     justify-content: center;
+    align-items: center;
+}
+
+.extras-one {
+    display: flex;
+    width: 40px;
+    height: 40px;
+    border: none;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
 }
 
 /* 聊天框 */
