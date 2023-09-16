@@ -1,12 +1,14 @@
 一.概要:
 
 二.运行:
-    python app.py
+    1.训练模型    python train.py
+    2. 打开网页    python app.py
 三.注意事项:
     1、修改模型路径以及各云模型的Access_Token或Key
     2、python环境：3.10
     3、请开vpn,并设置你自己的代理环境变量
-    4、对于各种依赖，没有特别的版本要求，腾讯云模型那一块是pip install tencentcloud-sdk-python-tbp==3.0.945。
+    4、模型训练数据集的格式为 TEXT_Y 或者 TEXT_N
+    5、对于各种依赖，没有特别的版本要求，腾讯云模型那一块是pip install tencentcloud-sdk-python-tbp==3.0.945。
     pip list（以下并不是所有依赖都需要，如果安装的依赖版本不对，请参考）
 Package                     Version
 
