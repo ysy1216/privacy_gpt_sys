@@ -16,7 +16,7 @@ def importdata(tag, flag):
                 text_jieba = jieba.lcut(text)
             text_list.append(" ".join(text_jieba))
     else:
-        for i in range(3, 13):
+        for i in range(3, 14):
             file_path = f"data/Info/info{i}.txt"
             with open(file_path, encoding="UTF-8") as f:
                 text = f.read()

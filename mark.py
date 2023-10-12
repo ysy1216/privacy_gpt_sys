@@ -3,43 +3,28 @@
 import re
 import jieba
 import torch
-from model import BertTextClassifier
-from transformers import BertTokenizer, BertConfig, AutoTokenizer, BertModel
+from model import BertTextClassifier, BertLstmClassifier
+from transformers import BertTokenizer, BertConfig, AutoTokenizer
 import random
 from feature import getFeature, stop_word
+
 
 class MaskHandler:
     def __init__(self, model_path):
         # Initialize the local BERT model
-        self.labels = ["N", "P", "A", "E", "O"]
-        self.bert_config = BertConfig.from_pretrained('bert-base-chinese')
-        self.model = BertTextClassifier(self.bert_config, len(self.labels))
+        self.labels = ["Y", "N"]
+        self.bert_config = BertConfig.from_pretrained('./bert-base-chinese')
+        self.model = BertLstmClassifier(self.bert_config, len(self.labels))
         self.model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')), strict=False)
         self.model.eval()
-        self.tokenizer = BertTokenizer.from_pretrained('bert-base-chinese')
+        self.tokenizer = BertTokenizer.from_pretrained('./bert-base-chinese')
 
         # Initialize the cloud-based roberta model
         self.cloud_tokenizer = AutoTokenizer.from_pretrained("hfl/chinese-roberta-wwm-ext-large")
 
-    def classic(self, query):
-        sensitive_words = []
-        for tmp_text in jieba.lcut(query):
-            print(tmp_text)
-            token = self.tokenizer(tmp_text, add_special_tokens=True, padding='max_length', truncation=True,
-                                   max_length=512)
-            input_ids = torch.tensor([token['input_ids']], dtype=torch.long)
-            attention_mask = torch.tensor([token['attention_mask']], dtype=torch.long)
-            token_type_ids = torch.tensor([token['token_type_ids']], dtype=torch.long)
-            predicted = self.model(input_ids, attention_mask, token_type_ids)
-            pred_label = torch.argmax(predicted, dim=1)
-            if self.labels[pred_label] in ["A", "E", "P", "N"]:
-                sensitive_words.append(tmp_text)
-
-        return sensitive_words
-
-    #Desensitization algorithm
+    # Desensitization algorithm
     def mask_sensitive_info(self, text, sensitive, level, tag):
-        print("脱敏等级第" + (str)(level+1) + "级")
+        # print("脱敏等级第" + (str)(level+1) + "级")
         for word in sensitive:
             # text_jieba = jieba.lcut(text)
             len_word = len(word)
@@ -61,13 +46,15 @@ class MaskHandler:
             text = re.sub(word, masked_sensitive, text, flags=re.IGNORECASE)
         return text
 
-#Divide sentences into punctuation marks
+
+# Divide sentences into punctuation marks
 def fun_splite(text):
     pattern = r',|\.|/|;|\'|`|\[|\]|<|>|\?|:|"|\{|\}|\~|!|@|#|\$|%|\^|&|\(|\)|-|=|\_|\+|，|。|、|；|‘|’|【|】|：|！| |…|（|）,·'
     result_list = re.split(pattern, text.strip())
     return result_list
 
-#Split the sentence with a stop word list
+
+# Split the sentence with a stop word list
 def fun_splitein(text):
     sentence_depart = jieba.lcut(text.strip())
     stopwords = stop_word()
@@ -79,8 +66,10 @@ def fun_splitein(text):
                 # outstr += " "
     return outstr
 
-#Using models to determine whether sentences are sensitive
+
+# Using models to determine whether sentences are sensitive
 def fun_isSen(maskHandler, text, tag):
+    #print("SEN", text)
     flag = False
     token = maskHandler.tokenizer(text, add_special_tokens=True, padding='max_length', truncation=True, max_length=512)
     input_ids = torch.tensor([token['input_ids']], dtype=torch.long)
@@ -88,17 +77,15 @@ def fun_isSen(maskHandler, text, tag):
     token_type_ids = torch.tensor([token['token_type_ids']], dtype=torch.long)
     predicted = maskHandler.model(input_ids, attention_mask, token_type_ids)
     output = torch.softmax(predicted, dim=1)
-    #Output [:, 4] and Output [:, 1] is an insensitive probability
+    print(output)
+    # output [:, 0]is an sensitive probability
     if tag == "false":
-        if output[:, 4].item() < 0.3:
+        if output[:, 0].item() > 0.7:
             flag = True
-    elif tag == "true":
-        if output[:, 1].item() < 0.3:
-            flag = True
-
     return flag
 
-#Invert the insensitive phrase returned by tfidf and return the sensitive phrase
+
+# Invert the insensitive phrase returned by tfidf and return the sensitive phrase
 def getSen(nosen, text):
     sen = []
     text_jieba = jieba.lcut(text)
@@ -107,14 +94,14 @@ def getSen(nosen, text):
             if word not in sen:
                 sen.append(word)
     return sen
-#When inputting multiple sentences, determine whether each sentence is sensitive and then desensitize it
+
+
+# When inputting multiple sentences, determine whether each sentence is sensitive and then desensitize it
 def fun_1(text, selected_sen_level, tag):
-    if tag == "true":
-        maskHandler = MaskHandler("The path of your model")#Sensitive model
-    else:
-        maskHandler = MaskHandler("The path of your model")#Adolescent model
+    maskHandler = MaskHandler("model/sen_model.pkl")  # Sensitive model
     text_splite = fun_splite(text)
     tmp = text
+    print(tmp)
     for tmp_text in text_splite:
         text_stop = fun_splitein(tmp_text)
         sen_fea = []
@@ -123,10 +110,14 @@ def fun_1(text, selected_sen_level, tag):
                 sen_fea = getSen(getFeature(tag, text_stop), text_stop)
             else:
                 sen_fea = getFeature(tag, tmp_text, True)
+        # print(sen_fea)
         res = maskHandler.mask_sensitive_info(tmp, sen_fea, selected_sen_level, tag)
         tmp = res
+    print(tmp)
     return tmp
 
 
-
-
+if __name__ == '__main__':
+    #str = "陈宇阳的身份证号码是多少？"
+    str = "明天去哪玩"
+    fun_1(str, 1, "false")
